@@ -2,3 +2,5 @@ Flask==2.0.2
 Flask-PyMongo==2.3.0
 Flask-CORS==3.0.10
 web3==5.24.0
+Werkzeug==2.0.2
+PyJWT==2.3.0

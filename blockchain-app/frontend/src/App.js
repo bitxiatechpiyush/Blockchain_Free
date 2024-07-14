@@ -5,9 +5,11 @@ import './App.css';
 import Blockchain from './components/Blockchain';
 import NewTransaction from './components/NewTransaction';
 import Mine from './components/Mine';
+import Login from './components/Login';
 
 function App() {
   const [account, setAccount] = useState(null);
+  const [token, setToken] = useState(null);
 
   useEffect(() => {
     connectWallet();
@@ -28,6 +30,10 @@ function App() {
       console.log('Please install MetaMask!');
     }
   };
+
+  if (!token) {
+    return <Login setToken={setToken} />;
+  }
 
   return (
     <Router>
