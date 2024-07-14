@@ -1,12 +1,17 @@
 from flask import Blueprint, jsonify, request
+from werkzeug.security import generate_password_hash, check_password_hash
 from .blockchain import Blockchain
 from . import mongo, w3
 import json
 from bson import json_util
+import jwt
+import datetime
+
 
 main = Blueprint('main', __name__)
 
 blockchain = Blockchain()
+secret_key = "supersecretkey"  # Change this to a more secure key
 
 @main.route('/mine', methods=['GET'])
 def mine():
@@ -62,3 +67,40 @@ def full_chain():
 def get_balance(address):
     balance = w3.eth.get_balance(address)
     return jsonify({'balance': w3.from_wei(balance, 'ether')}), 200
+
+
+@main.route('/signup', methods=['POST'])
+def signup():
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+    
+    if not username or not password:
+        return jsonify({"message": "Missing username or password"}), 400
+    
+    hashed_password = generate_password_hash(password)
+    
+    mongo.db.users.insert_one({
+        "username": username,
+        "password": hashed_password
+    })
+    
+    return jsonify({"message": "User created successfully"}), 201
+
+@main.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+    
+    user = mongo.db.users.find_one({"username": username})
+    
+    if user and check_password_hash(user['password'], password):
+        token = jwt.encode({
+            'username': username,
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24)
+        }, secret_key, algorithm="HS256")
+        
+        return jsonify({"token": token}), 200
+    else:
+        return jsonify({"message": "Invalid credentials"}), 401
