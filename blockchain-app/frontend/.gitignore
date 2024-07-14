@@ -1,0 +1,12 @@
+lrf1_backend_api_py310_venv
+logs
+build
+dist
+*.log
+*.spec
+*.pyc
+get_header_data.log
+get_heat_number_for_sap_data.log
+lrf_history
+__pycache__
+node_modules
