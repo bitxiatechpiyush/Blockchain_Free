@@ -1,17 +1,18 @@
-<h1 align="center">Secure block chain system using blockchain</h1>
+<h1 align="center">Secure Blockchain System using Blockchain</h1>
 
-<h3 align="left">Created a secure block chain system using flask as a backend react as a frontend in integration with mongodb and used blockchain metamask wallet and ganche for fake token.</h3>
+<h3 align="left">Created a secure blockchain system using Flask as a backend, React as a frontend in integration with MongoDB, and used blockchain, Metamask wallet, and Ganache for fake tokens.</h3>
 
-<h3 align="left">image for Login/Signup form </h3>
-![alt text](https://github.com/bitxiatechpiyush/Blockchain_Free/blob/piyush/image.png)
-<h3 align="left">image for Dashboard page </h3>
-![alt text](https://github.com/bitxiatechpiyush/Blockchain_Free/blob/piyush/image-1.png)
-<h3 align="left">image for blockchain hostory page </h3>
-![alt text](https://github.com/bitxiatechpiyush/Blockchain_Free/blob/piyush/image-2.png)
-<h3 align="left">image for new transcation page </h3>
-![alt text](https://github.com/bitxiatechpiyush/Blockchain_Free/blob/piyush/image-3.png)
-<h3 align="left">image for mine page </h3>
-![alt text](https://github.com/bitxiatechpiyush/Blockchain_Free/blob/piyush/image-4.png)
+<h3 align="left">Image for Login/Signup form</h3>
+<img src="https://raw.githubusercontent.com/bitxiatechpiyush/Blockchain_Free/piyush/image.png" alt="Login/Signup form">
 
+<h3 align="left">Image for Dashboard page</h3>
+<img src="https://raw.githubusercontent.com/bitxiatechpiyush/Blockchain_Free/piyush/image-1.png" alt="Dashboard page">
 
+<h3 align="left">Image for Blockchain History page</h3>
+<img src="https://raw.githubusercontent.com/bitxiatechpiyush/Blockchain_Free/piyush/image-2.png" alt="Blockchain History page">
 
+<h3 align="left">Image for New Transaction page</h3>
+<img src="https://raw.githubusercontent.com/bitxiatechpiyush/Blockchain_Free/piyush/image-3.png" alt="New Transaction page">
+
+<h3 align="left">Image for Mine page</h3>
+<img src="https://raw.githubusercontent.com/bitxiatechpiyush/Blockchain_Free/piyush/image-4.png" alt="Mine page">
