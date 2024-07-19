@@ -10,7 +10,6 @@ def create_app():
     app = Flask(__name__)
     app.config['MONGO_URI'] = 'mongodb://localhost:27017/blockchain_db'
     app.config['SECRET_KEY'] = 'supersecretkey'  # Change this to a more secure key
-    
     CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
     mongo.init_app(app)
 
