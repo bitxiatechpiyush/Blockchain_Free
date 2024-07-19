@@ -7,9 +7,7 @@ from bson import json_util
 import jwt
 import datetime
 
-
 main = Blueprint('main', __name__)
-
 blockchain = Blockchain()
 secret_key = "supersecretkey"  # Change this to a more secure key
 
@@ -33,7 +31,7 @@ def mine():
     response = {
         'message': "New Block Forged",
         'index': block['index'],
-        'transactions': block['transactions'],
+        'transactions': blockchain.decode_data(block['transactions']),
         'proof': block['proof'],
         'previous_hash': block['previous_hash'],
     }
@@ -49,17 +47,17 @@ def new_transaction():
     if not blockchain.verify_transaction(values):
         return 'Invalid transaction signature', 400
 
-    index = blockchain.new_transaction(values['sender'], values['recipient'], values['amount'])
+    index = blockchain.new_transaction(values['sender'], values['recipient'], values['amount'], values.get('message'))
 
     response = {'message': f'Transaction will be added to Block {index}'}
     return jsonify(response), 201
 
 @main.route('/chain', methods=['GET'])
 def full_chain():
-    blocks = list(mongo.db.blocks.find())
+    decoded_chain = blockchain.get_decoded_chain()
     response = {
-        'chain': json.loads(json_util.dumps(blocks)),
-        'length': len(blocks),
+        'chain': json.loads(json_util.dumps(decoded_chain)),
+        'length': len(decoded_chain),
     }
     return jsonify(response), 200
 
@@ -68,39 +66,48 @@ def get_balance(address):
     balance = w3.eth.get_balance(address)
     return jsonify({'balance': w3.from_wei(balance, 'ether')}), 200
 
-
 @main.route('/signup', methods=['POST'])
 def signup():
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
-    
+
     if not username or not password:
         return jsonify({"message": "Missing username or password"}), 400
-    
+
+    existing_user = mongo.db.users.find_one({"username": username})
+    if existing_user:
+        return jsonify({"message": "Username already exists"}), 400
+
     hashed_password = generate_password_hash(password)
-    
-    mongo.db.users.insert_one({
+    user_id = mongo.db.users.insert_one({
         "username": username,
         "password": hashed_password
-    })
-    
-    return jsonify({"message": "User created successfully"}), 201
+    }).inserted_id
+
+    return jsonify({"message": "User created successfully", "user_id": str(user_id)}), 201
 
 @main.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
-    
+
     user = mongo.db.users.find_one({"username": username})
-    
     if user and check_password_hash(user['password'], password):
         token = jwt.encode({
+            'user_id': str(user['_id']),
             'username': username,
             'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24)
         }, secret_key, algorithm="HS256")
-        
-        return jsonify({"token": token}), 200
+        return jsonify({"token": token, "user_id": str(user['_id'])}), 200
     else:
         return jsonify({"message": "Invalid credentials"}), 401
+
+@main.route('/transactions', methods=['GET'])
+def get_transactions():
+    all_transactions = []
+    for block in blockchain.chain:
+        transactions = blockchain.decode_data(block['transactions'])
+        all_transactions.extend(transactions)
+    return jsonify({'transactions': all_transactions}), 200
